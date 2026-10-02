@@ -54,6 +54,7 @@ void loop() {
 
   if (ledState != lastLedState) {
     lastLedState = ledState;
+    Serial.println("Switch Trigger");
     Blynk.virtualWrite(V0, ledState);
   }
 }
