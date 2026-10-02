@@ -23,7 +23,7 @@ BLYNK_WRITE(V1) { LED_SWITCH = param.asInt(); }
 BLYNK_WRITE(V2) { MODE_SWITCH = param.asInt(); }
 
 void setup() {
-  Serial.begin(9800);
+  Serial.begin(9600);
   pinMode(LDR_PIN, INPUT);
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
@@ -34,6 +34,7 @@ void loop() {
 
   int value_LDR = digitalRead(LDR_PIN);
   delay(100);
+
   // MODE 0 = MANUAL, MODE 1 = Auto,
   if (MODE_SWITCH == 1) {
     if (value_LDR < 1) {
