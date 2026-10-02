@@ -14,18 +14,21 @@
 char ssid[] = "Wokwi-GUEST";
 char pass[] = "";
 
-int MODE_SWITCH = 0;
-int LED_SWITCH = 0;
-int LED_ON = 0;
-int lastLedState = -1;
+enum SystemMode { MODE_MANUAL = 0, MODE_AUTO = 1 };
+enum LedState { LED_OFF = 0, LED_ON = 1 };
+enum LedSwitchState { SWITCH_OFF = 0, SWITCH_ON = 1 };
 
-BLYNK_WRITE(V1) { LED_SWITCH = param.asInt(); }
-BLYNK_WRITE(V2) { MODE_SWITCH = param.asInt(); }
+SystemMode currentMode = MODE_MANUAL;
+LedSwitchState ledSwitchState = SWITCH_OFF;
+LedState ledState = LED_OFF;
+LedState lastLedState = (LedState)-1;
+
+BLYNK_WRITE(V1) { ledSwitchState = (LedSwitchState)param.asInt(); }
+BLYNK_WRITE(V2) { currentMode = (SystemMode)param.asInt(); }
 
 void setup() {
   Serial.begin(9600);
   pinMode(LDR_PIN, INPUT);
-
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
 }
 
@@ -35,24 +38,22 @@ void loop() {
   int value_LDR = digitalRead(LDR_PIN);
   delay(100);
 
-  // MODE 0 = MANUAL, MODE 1 = Auto,
-  if (MODE_SWITCH == 1) {
+  if (currentMode == MODE_AUTO) {
     if (value_LDR < 1) {
-      LED_ON = 0;
+      ledState = LED_OFF;
     } else {
-      LED_ON = 1;
+      ledState = LED_ON;
     }
-  } else if (MODE_SWITCH == 0) {
-    // SWITCH 0 = OFF, SWITCH 1 = ON
-    if (LED_SWITCH == 1) {
-      LED_ON = 1;
+  } else if (currentMode == MODE_MANUAL) {
+    if (ledSwitchState == SWITCH_ON) {
+      ledState = LED_ON;
     } else {
-      LED_ON = 0;
+      ledState = LED_OFF;
     }
   }
 
-  if (LED_ON != lastLedState) {
-    lastLedState = LED_ON;
-    Blynk.virtualWrite(V0, LED_ON);
+  if (ledState != lastLedState) {
+    lastLedState = ledState;
+    Blynk.virtualWrite(V0, ledState);
   }
 }
