@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "author": "Andri Jayapedi",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 33.34,
+      "left": 50.67,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr1",
+      "top": -44.8,
+      "left": -143.2,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    ["esp:TX0", "$serialMonitor:RX", "", []],
+    ["esp:RX0", "$serialMonitor:TX", "", []],
+    ["ldr1:VCC", "esp:3V3", "red", ["h268.8", "v259.2", "h-48"]],
+    ["ldr1:GND", "esp:GND.2", "black", ["h28.8", "v47.6", "h-76.8", "v144"]],
+    ["ldr1:DO", "esp:D2", "green", ["h201.6", "v-0.6"]]
+  ],
+  "dependencies": {}
+}
